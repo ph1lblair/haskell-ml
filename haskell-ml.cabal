@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: af2d46fb645f1c0a524276b5dfe5b50ba690e9275b016fdc22bdde0dd89d2e34
+-- hash: ed66c28cd2530c961653aa86d79818517d9d9dc333bbef1edd308e8191659237
 
 name:           haskell-ml
 version:        0.1.0.0
@@ -36,6 +36,7 @@ library
       base >=4.7 && <5
     , hmatrix
     , hspec
+    , split
   default-language: Haskell2010
 
 executable haskell-ml-exe
@@ -51,6 +52,7 @@ executable haskell-ml-exe
     , haskell-ml
     , hmatrix
     , hspec
+    , split
   default-language: Haskell2010
 
 test-suite haskell-ml-test
@@ -67,4 +69,5 @@ test-suite haskell-ml-test
     , haskell-ml
     , hmatrix
     , hspec
+    , split
   default-language: Haskell2010
