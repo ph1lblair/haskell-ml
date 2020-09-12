@@ -77,10 +77,16 @@ main = do
     let indices = map read $ splitOn "," orderDta
 
     let (trainAccuracy, validationAccuracy) = classifierAccuracy perceptron features features' (vector labels) (vector labels') t indices
+    let (trainAccuracy', validationAccuracy') = classifierAccuracy averagePerceptron features features' (vector labels) (vector labels') t indices
+    let (trainAccuracy'', validationAccuracy'') = classifierAccuracy' pegasos features features' (vector labels) (vector labels') t lambda indices
 
-    putStrLn "Perceptron:"
+    putStrLn "Classifier accuracy:"
 --    print $ (takeColumns 10 . takeRows 4) features
     print $ "Training accuracy for perceptron: " ++ show trainAccuracy
     print $ "Validation accuracy for perceptron: " ++ show validationAccuracy
+    print $ "Training accuracy for average perceptron: " ++ show trainAccuracy'
+    print $ "Validation accuracy for average perceptron: " ++ show validationAccuracy'
+    print $ "Training accuracy for pegasos: " ++ show trainAccuracy''
+    print $ "Validation accuracy for pegasos: " ++ show validationAccuracy''
 
  

@@ -59,7 +59,7 @@ spec =
         let x = (1><2) [1.0, 2.0]
             y = LA.vector [1]
             t = 1
-        perceptron x y t [0] `shouldBe` (LA.vector [1, 2], 1)
+        averagePerceptron x y t [0] `shouldBe` (LA.vector [1, 2], 1)
 
     it "Average Perceptron 2" $ do
         let x = (2><2) [-1.0, 0, 1.0, 2.0]
