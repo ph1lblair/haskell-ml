@@ -66,8 +66,8 @@ main = do
 --    testDta <- readFile "reviews_test.tsv"
     orderDta <- readFile "4000.txt"
 
-    let t = 10
-    let lambda = 0.2
+    let t = 20
+    let lambda = 0.005
     let (labels, text) = unzip $ map ((\ i -> ((read . head) i, i !! 4)) . splitOn "\t") (drop 1 $ lines trainDta)
     let bagOfWords =  foldr addWord M.empty $ (concatMap words . map separate) text
     let features = extractFeatures text bagOfWords
