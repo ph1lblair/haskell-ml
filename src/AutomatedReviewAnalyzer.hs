@@ -1,6 +1,11 @@
 module AutomatedReviewAnalyzer where
 
 import Numeric.LinearAlgebra as LA
+import Data.List.Split (splitOn)
+import qualified Data.Map.Strict as M
+import System.IO
+import Data.Char (isAlpha, toLower)
+import SentimentAnalysis
 
 classify :: Matrix R -> Vector R -> R -> Vector R
 classify x theta thata0 = cmap check (theta LA.<# LA.tr' x + theta0s)
@@ -27,4 +32,55 @@ classifierAccuracy' classifier x x' y y' t lambda zs =
     (accuracy (classify x theta theta0) y, accuracy (classify x' theta theta0) y')
     where
         (theta, theta0) = classifier x y t lambda zs
+
+separate :: String -> String
+separate = concatMap separate'
+    where 
+        separate' c = if isAlpha c then [toLower c] else [' ', c, ' ']
+
+addWord :: String -> M.Map String R -> M.Map String R
+addWord w map = if M.member w map then map else M.insert w 1.0 map 
+
+countWord :: String -> M.Map String R -> M.Map String R
+countWord w = M.insertWith (+) w 1
+
+extractFeatures :: [String] -> M.Map String R -> Matrix R
+extractFeatures xs d = (length xss >< M.size d) ys
+    where
+        xss = (map words . map separate) xs
+        ds = map (foldl (flip countWord) M.empty) xss
+        ys = concatMap f $ zip ds (repeat d)
+        f (d'', d') = map g $ map (flip M.lookup d'') $ M.keys d'
+        g Nothing = 0
+        g (Just a) = a
+
+main :: IO ()
+main = do
+
+    h1 <- openFile "reviews_train.tsv" ReadMode
+    hSetEncoding h1 latin1
+    trainDta <- hGetContents h1
+    h2 <- openFile "reviews_val.tsv" ReadMode
+    hSetEncoding h2 latin1
+    valDta <- hGetContents h2
+--    testDta <- readFile "reviews_test.tsv"
+    orderDta <- readFile "4000.txt"
+
+    let t = 10
+    let lambda = 0.2
+    let (labels, text) = unzip $ map ((\ i -> ((read . head) i, i !! 4)) . splitOn "\t") (drop 1 $ lines trainDta)
+    let bagOfWords =  foldr addWord M.empty $ (concatMap words . map separate) text
+    let features = extractFeatures text bagOfWords
+    let (labels', text') = unzip $ map ((\ i -> ((read . head) i, i !! 4)) . splitOn "\t") (drop 1 $ lines valDta)
+    let features' = extractFeatures text' bagOfWords
+
+    let indices = map read $ splitOn "," orderDta
+
+    let (trainAccuracy, validationAccuracy) = classifierAccuracy perceptron features features' (vector labels) (vector labels') t indices
+
+    putStrLn "Perceptron:"
+--    print $ (takeColumns 10 . takeRows 4) features
+    print $ "Training accuracy for perceptron: " ++ show trainAccuracy
+    print $ "Validation accuracy for perceptron: " ++ show validationAccuracy
+
  

@@ -24,6 +24,7 @@ dependencies:
 - hmatrix
 - hspec
 - split
+- containers
 
 library:
   source-dirs: src
@@ -40,6 +41,8 @@ executables:
     - haskell-ml
     default-extensions:
     - InstanceSigs
+    - PartialTypeSignatures
+    - ScopedTypeVariables
 
 tests:
   haskell-ml-test:

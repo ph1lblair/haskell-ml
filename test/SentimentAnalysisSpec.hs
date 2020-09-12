@@ -32,68 +32,68 @@ spec =
         perceptronSingleStepUpdate x y theta theta0 `shouldBe` (LA.vector [0, 3], -0.5)
 
     it "Perceptron 1" $ do
-        let x = (1><2) [1.0, 2.0] :: Matrix Double
+        let x1 = (1><2) [1.0, 2.0]
             y = LA.vector [1]
             t = 1
-        perceptron x y t `shouldBe` (LA.vector [1, 2], 1)
+        perceptron x1 y t [0] `shouldBe` (LA.vector [1, 2], 1)
 
     it "Perceptron 2" $ do
-        let x = (2><2) [1.0, 2.0, -1.0, 0] :: Matrix Double
+        let x = (2><2) [1.0, 2.0, -1.0, 0]
             y = LA.vector [1, 1]
             t = 1
-        perceptron x y t `shouldBe` (LA.vector [0, 2], 2)
+        perceptron x y t [0, 1] `shouldBe` (LA.vector [0, 2], 2)
 
     it "Perceptron 3" $ do
-        let x = (1><2) [1.0, 2.0] :: Matrix Double
+        let x3 = (1><2) [1.0, 2.0]
             y = LA.vector [1]
             t = 2
-        perceptron x y t `shouldBe` (LA.vector [1, 2], 1)
+        perceptron x3 y t [0] `shouldBe` (LA.vector [1, 2], 1)
 
     it "Perceptron 4" $ do
-        let x = (2><2) [1.0, 2.0, -1.0, 0] :: Matrix Double
+        let x = (2><2) [1.0, 2.0, -1.0, 0]
             y = LA.vector [1, 1]
             t = 2
-        perceptron x y t `shouldBe` (LA.vector [0, 2], 2)
+        perceptron x y t [0,1] `shouldBe` (LA.vector [0, 2], 2)
 
     it "Average Perceptron 1" $ do
-        let x = (1><2) [1.0, 2.0] :: Matrix Double
+        let x = (1><2) [1.0, 2.0]
             y = LA.vector [1]
             t = 1
-        perceptron x y t `shouldBe` (LA.vector [1, 2], 1)
+        perceptron x y t [0] `shouldBe` (LA.vector [1, 2], 1)
 
     it "Average Perceptron 2" $ do
-        let x = (2><2) [-1.0, 0, 1.0, 2.0] :: Matrix Double
+        let x = (2><2) [-1.0, 0, 1.0, 2.0]
             y = LA.vector [1, 1]
             t = 1
-        averagePerceptron x y t `shouldBe` (LA.vector [-0.5, 1], 1.5)
+        averagePerceptron x y t [0, 1] `shouldBe` (LA.vector [-0.5, 1], 1.5)
 
     it "Average Perceptron 3" $ do
-        let x = (1><2) [1.0, 2.0] :: Matrix Double
+        let x = (1><2) [1.0, 2.0]
             y = LA.vector [1]
             t = 2
-        averagePerceptron x y t `shouldBe` (LA.vector [1, 2], 1)
+        averagePerceptron x y t [0] `shouldBe` (LA.vector [1, 2], 1)
 
     it "Average Perceptron 4" $ do
         let x = (2><2) [-1.0, 0, 1.0, 2.0] :: Matrix Double
             y = LA.vector [1, 1]
             t = 2
-        averagePerceptron x y t `shouldBe` (LA.vector [-0.25, 1.5], 1.75)
+        averagePerceptron x y t [0, 1] `shouldBe` (LA.vector [-0.25, 1.5], 1.75)
 
     it "Pegasos single update 1" $ do
-        let x = LA.vector [1, 2]
-            y = 1
+        let x4 = LA.vector [1, 2]
+            y1 = 1
             lambda = 0.2
             eta = 0.1
             theta0 = -1.5
-        pegasosSingleStepUpdate x y lambda eta theta theta0 `shouldBe` (LA.vector [-0.88, 1.18], -1.4)
+        pegasosSingleStepUpdate x4 y1 lambda eta theta theta0 `shouldBe` (LA.vector [-0.88, 1.18], -1.4)
 
     it "Pegasos single update 2" $ do
         let x = LA.vector [1, 1]
-            y = 1
+            y2 = 1
             lambda = 0.2
             eta = 0.1
             theta0 = 1
-        pegasosSingleStepUpdate x y lambda eta theta theta0 `shouldBe` (LA.vector [-0.88, 1.08], 1.1)
+        pegasosSingleStepUpdate x y2 lambda eta theta theta0 `shouldBe` (LA.vector [-0.88, 1.08], 1.1)
 
     it "Pegasos single update 3" $ do
         let x = LA.vector [1, 2]
@@ -108,11 +108,11 @@ spec =
             y = LA.vector [1]
             t = 1
             lambda = 0.2
-        pegasos x y t lambda `shouldBe` (LA.vector [1, 2], 1)
+        pegasos x y t lambda [0] `shouldBe` (LA.vector [1, 2], 1)
 
     it "Pegasos 2" $ do
         let x = (2><2) [1, 1, 1, 1]
             y = LA.vector [1, 1]
             t = 1
             lambda = 1
-        pegasos x y t lambda `shouldBe` (LA.vector [1 - 1 / sqrt 2, 1 - 1 / sqrt 2], 1)
+        pegasos x y t lambda [0, 1] `shouldBe` (LA.vector [1 - 1 / sqrt 2, 1 - 1 / sqrt 2], 1)
