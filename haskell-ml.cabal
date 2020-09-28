@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6cc4e1f9f38d2468726b3c190a86f03cd88f8d3df2f51b638a6c2833f1370522
+-- hash: c966c0c5f143c0827e9a666b2e654a45269c4168dffe303cbc99d23d775fa384
 
 name:           haskell-ml
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       AutomatedReviewAnalyzer
+      DigitRecognition
       SentimentAnalysis
   other-modules:
       Paths_haskell_ml
@@ -35,10 +36,13 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , bytestring
     , containers
     , hmatrix
     , hspec
+    , random
     , split
+    , zlib
   default-language: Haskell2010
 
 executable haskell-ml-exe
@@ -51,11 +55,14 @@ executable haskell-ml-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
     , containers
     , haskell-ml
     , hmatrix
     , hspec
+    , random
     , split
+    , zlib
   default-language: Haskell2010
 
 test-suite haskell-ml-test
@@ -63,6 +70,7 @@ test-suite haskell-ml-test
   main-is: Spec.hs
   other-modules:
       AutomatedReviewAnalyzerSpec
+      DigitRecognitionSpec
       SentimentAnalysisSpec
       Paths_haskell_ml
   hs-source-dirs:
@@ -70,9 +78,12 @@ test-suite haskell-ml-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
     , containers
     , haskell-ml
     , hmatrix
     , hspec
+    , random
     , split
+    , zlib
   default-language: Haskell2010

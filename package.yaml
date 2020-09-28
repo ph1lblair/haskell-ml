@@ -25,6 +25,9 @@ dependencies:
 - hspec
 - split
 - containers
+- zlib
+- bytestring
+- random
 
 library:
   source-dirs: src
@@ -43,7 +46,7 @@ executables:
     - InstanceSigs
     - PartialTypeSignatures
     - ScopedTypeVariables
-
+  
 tests:
   haskell-ml-test:
     main:                Spec.hs

@@ -47,10 +47,10 @@ countWord w = M.insertWith (+) w 1
 extractFeatures :: [String] -> M.Map String R -> Matrix R
 extractFeatures xs d = (length xss >< M.size d) ys
     where
-        xss = (map words . map separate) xs
+        xss = map (words . separate) xs
         ds = map (foldl (flip countWord) M.empty) xss
         ys = concatMap f $ zip ds (repeat d)
-        f (d'', d') = map g $ map (flip M.lookup d'') $ M.keys d'
+        f (d'', d') = map (g . flip M.lookup d'') (M.keys d')
         g Nothing = 0
         g (Just a) = a
 
@@ -69,7 +69,7 @@ main = do
     let t = 20
     let lambda = 0.005
     let (labels, text) = unzip $ map ((\ i -> ((read . head) i, i !! 4)) . splitOn "\t") (drop 1 $ lines trainDta)
-    let bagOfWords =  foldr addWord M.empty $ (concatMap words . map separate) text
+    let bagOfWords =  foldr addWord M.empty $ concatMap (words . separate) text
     let features = extractFeatures text bagOfWords
     let (labels', text') = unzip $ map ((\ i -> ((read . head) i, i !! 4)) . splitOn "\t") (drop 1 $ lines valDta)
     let features' = extractFeatures text' bagOfWords
