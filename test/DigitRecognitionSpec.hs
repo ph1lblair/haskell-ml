@@ -19,7 +19,7 @@ temp = 0.2
 
 spec :: Spec
 spec =
-  describe "Digit Recognition" $ do
+  describe "Compute probabilities" $ do
 
     it "Compute probabilities 1" $ do
         let
@@ -30,8 +30,8 @@ spec =
 
     it "Compute probabilities 2" $ do
         let
-            theta = (n >< d) $ map fromIntegral [0..(n * d - 1)]
+            theta = (k >< d) $ map fromIntegral [0..(k * d - 1)]
             temp = 0.2
-            expected = (k >< (n - 1)) (repeat 0.0) ||| konst 1.0 (k, 1)
+            expected = ((k - 1) >< n) (repeat 0.0) === konst 1.0 (1, n)
             result2 = computeProbabilities x theta temp
         result2 `shouldBe` expected
