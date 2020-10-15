@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c966c0c5f143c0827e9a666b2e654a45269c4168dffe303cbc99d23d775fa384
+-- hash: 2e5365171d8dc013702affac13bfdd615531b8ad90b229e02c3bd1c1dfd8e0b8
 
 name:           haskell-ml
 version:        0.1.0.0
@@ -29,6 +29,7 @@ library
   exposed-modules:
       AutomatedReviewAnalyzer
       DigitRecognition
+      Features
       SentimentAnalysis
   other-modules:
       Paths_haskell_ml
@@ -71,6 +72,7 @@ test-suite haskell-ml-test
   other-modules:
       AutomatedReviewAnalyzerSpec
       DigitRecognitionSpec
+      FeaturesSpec
       SentimentAnalysisSpec
       Paths_haskell_ml
   hs-source-dirs:
