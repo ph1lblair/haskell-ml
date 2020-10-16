@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 module Features where
 
 import Numeric.LinearAlgebra as LA
@@ -5,6 +6,7 @@ import Numeric.LinearAlgebra.HMatrix (eigSH')
 import Codec.Compression.GZip (decompress)
 import qualified Data.ByteString.Lazy as BS
 import DigitRecognition
+import Data.Bifunctor (Bifunctor(bimap))
 
 mean :: Matrix R -> Vector R
 mean x = tr x #> konst k r
@@ -25,12 +27,21 @@ principalComponents x = vs
 projectOntoPC :: Matrix R -> Matrix R -> Int -> Matrix R
 projectOntoPC x pcs n = cmap (\x -> if x < 1.0e-16 && x > -1.0e-16 then 0 else x) $ centreData x LA.<> (pcs ¿ [0 .. n - 1])
 
-linearTerms :: [R] -> [R]
-linearTerms xs = concat $ linearTerms' (drop 1 xs) xs
+triUpper :: Int -> Int -> [(Int, Int)]
+triUpper m offset = [(a,b) | a <- [0.. m - 1], b <- [offset .. m - 1], a + offset <= b]
+
+twoTerms :: [R] -> [R]
+twoTerms xs = concat $ twoTerms' (drop 1 xs) xs
     where
-        linearTerms' [] _ = []
-        linearTerms' xs ys = linearTerms'' (zip xs ys) ++ linearTerms' (drop 1 xs) ys
-        linearTerms'' xs = map (\(x, y) -> [sqrt 6 * x * y]) xs
+        twoTerms' [] _ = []
+        twoTerms' xs ys = twoTerms'' (zip xs ys) ++ twoTerms' (drop 1 xs) ys
+        twoTerms'' xs = map (\(x, y) -> [sqrt 6 * x * y]) xs 
+
+threeTerms :: Int -> Int -> Int -> [(Int, Int)]
+threeTerms m i offset = threeTerms' m i offset
+    where
+        threeTerms' 1 _ _ = []
+        threeTerms' m i offset = fmap (bimap (offset +) (+i)) (triUpper m 1) ++ threeTerms' (m - 1) (i+1) (offset + m)
 
 squareTerms :: [R] -> [R]
 squareTerms xs = concat $ squareTerms' (drop 1 xs) xs  
@@ -39,15 +50,28 @@ squareTerms xs = concat $ squareTerms' (drop 1 xs) xs
         squareTerms' xs ys = squareTerms'' (zip xs ys) ++ squareTerms' (drop 1 xs) ys
         squareTerms'' xs = map (\(x, y) -> [sqrt 3 * x ** 2 * y, sqrt 3 * x * y ** 2]) xs
 
+crossTerms :: Vector R -> [R]
+crossTerms v = coords
+    where
+        symm = v `outer` v
+        pairs = vjoin $ zipWith pairs' (toRows symm) [1..]
+        triples = pairs `outer` v
+        pairs' vs i = subVector i (size vs - i) vs
+        coords = map ((sqrt 6 * ) . (triples `atIndex`)) $ threeTerms (cols triples - 1) 1 0
+
 cubicFeatures :: Matrix R -> Matrix R
-cubicFeatures x = cubeTerms ||| squareTerms' ||| linearTerms'
+cubicFeatures x = cubeTerms ||| (n >< squareCols) squareTerms' ||| (n >< linearCols) linearTerms' ||| (n >< crossCols) crossTerms'
     where
         n = rows x
-        d = cols x
         x' = x ||| (rows x >< 1) (replicate (rows x) 1.0)
         cubeTerms = cmap (**3) x'
-        squareTerms' = (n >< product [1.. n + 1]) $ concatMap (squareTerms . toList) (toRows x')
-        linearTerms' = (n >< 1) $ concatMap (linearTerms . toList) (toRows x)
+        squareTerms' = concatMap (squareTerms . toList) (toRows x')
+        linearTerms' = concatMap (twoTerms . toList) (toRows x)
+        crossTerms' = concatMap crossTerms (toRows x)
+        squareCols = length squareTerms' `div` n
+        linearCols = length linearTerms' `div` n
+        crossCols = length crossTerms' `div` n
+        
 
 main :: IO ()
 main = do
