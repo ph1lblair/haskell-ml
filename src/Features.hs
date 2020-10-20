@@ -12,7 +12,7 @@ mean :: Matrix R -> Vector R
 mean x = tr x #> konst k r
     where
         r = rows x
-        k    = 1 / fromIntegral r        
+        k = 1 / fromIntegral r        
 
 centreData :: Matrix R -> Matrix R
 centreData x = x - fromRows (replicate (rows x) (mean x))
@@ -63,7 +63,7 @@ cubicFeatures :: Matrix R -> Matrix R
 cubicFeatures x = cubeTerms ||| (n >< squareCols) squareTerms' ||| (n >< linearCols) linearTerms' ||| (n >< crossCols) crossTerms'
     where
         n = rows x
-        x' = x ||| (rows x >< 1) (replicate (rows x) 1.0)
+        x' = x ||| (rows x >< 1) (replicate n 1.0)
         cubeTerms = cmap (**3) x'
         squareTerms' = concatMap (squareTerms . toList) (toRows x')
         linearTerms' = concatMap (twoTerms . toList) (toRows x)
@@ -91,13 +91,13 @@ main = do
     let k = 10
     let iter = 150
 
-    let nComponents = 18
+--    let nComponents = 18
     let pcs = principalComponents trainData
-    let trainData' = projectOntoPC trainData pcs nComponents
-    let testData' = projectOntoPC testData pcs nComponents
+--    let trainData' = projectOntoPC trainData pcs nComponents
+--    let testData' = projectOntoPC testData pcs nComponents
 
-    let (theta, cs) = softmaxRegression trainData' trainLabels temp alpha lambda k iter
-    print $ computeTestError testData' testLabels theta temp
+--    let (theta, cs) = softmaxRegression trainData' trainLabels temp alpha lambda k iter
+--    print $ computeTestError testData' testLabels theta temp
 
     let nCubic = 10
     let trainData'' = projectOntoPC trainData pcs nCubic
@@ -107,4 +107,4 @@ main = do
     let testCube = cubicFeatures testData''
 
     let (theta', _) = softmaxRegression trainCube trainLabels temp alpha lambda k iter
-    print $ computeTestError testCube testLabels theta temp
+    print $ computeTestError testCube testLabels theta' temp
