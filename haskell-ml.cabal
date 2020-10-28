@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2e5365171d8dc013702affac13bfdd615531b8ad90b229e02c3bd1c1dfd8e0b8
+-- hash: 8f6554e453cbbdb87aa48fc37707d019daddcf7c5bed37e30b40cec5a40ae164
 
 name:           haskell-ml
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       AutomatedReviewAnalyzer
       DigitRecognition
       Features
+      NeuralNetwork
       SentimentAnalysis
   other-modules:
       Paths_haskell_ml
@@ -40,6 +41,7 @@ library
     , bytestring
     , containers
     , hmatrix
+    , hmatrix-morpheus
     , hspec
     , random
     , split
@@ -60,6 +62,7 @@ executable haskell-ml-exe
     , containers
     , haskell-ml
     , hmatrix
+    , hmatrix-morpheus
     , hspec
     , random
     , split
@@ -84,6 +87,7 @@ test-suite haskell-ml-test
     , containers
     , haskell-ml
     , hmatrix
+    , hmatrix-morpheus
     , hspec
     , random
     , split
